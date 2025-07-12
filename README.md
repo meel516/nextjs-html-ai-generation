@@ -1,0 +1,1 @@
+nextjs-html-ai-generation
