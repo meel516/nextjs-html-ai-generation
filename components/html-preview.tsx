@@ -22,7 +22,7 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
       : rawHtml;
   };
 
-  const pureHtml = useMemo(() => extractPureHtml(html), [html]);
+  const pureHtml = useMemo(() => (html), [html]);
 
   // Refresh iframe preview
   const refreshPreview = () => {

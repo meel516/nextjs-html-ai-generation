@@ -3,7 +3,7 @@ nextjs-html-ai-generation
 
 An AI-powered chatbot that generates responsive, production-ready HTML and CSS code from user prompts — complete with live preview and authentication. Built for rapid MVP creation of landing pages.
 
-![Preview Screenshot](https://your-screenshot-url.com) <!-- Optional: Add demo image -->
+![Preview Screenshot](https://nextjs-html-ai-generation.vercel.app/) <!-- Optional: Add demo image -->
 
 ---
 
@@ -23,11 +23,11 @@ Build a developer tool that enables users to:
 |------------------|--------------------------------------|
 | Framework        | [Next.js](https://nextjs.org)        |
 | Language         | TypeScript                          |
-| Styling          | Tailwind CSS + ShadcnUI             |
+| Styling          | Tailwind CSS + RadixUI             |
 | Authentication   | NextAuth.js                         |
-| Database         | PostgreSQL (via Supabase or NeonDB) |
-| ORM              | Prisma or Drizzle                   |
-| GenAI API        | Any (Groq/OpenAI) via Vercel AI SDK |
+| Database         | PostgreSQL ( NeonDB) |
+| ORM              | Prisma                |
+| GenAI API        | Any (Groq) via Vercel AI SDK |
 | Hosting          | Vercel                              |
 
 ---
@@ -73,6 +73,4 @@ The model is optimized to:
 - Always return full HTML (`<!DOCTYPE html>` …)
 
 ---
-
-## 📂 Project Structure
 
