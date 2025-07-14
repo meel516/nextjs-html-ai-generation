@@ -4,11 +4,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Eye, Code, Download, RefreshCw,XIcon } from 'lucide-react';
 
-interface HtmlPreviewProps {
-  html: string;
-}
 
-export default function HtmlPreview({ html,onClose }: {html:HtmlPreviewProps,onClose:()=>void}) {
+export default function HtmlPreview({ html,onClose }: {html:string,onClose:()=>void}) {
   const [viewMode, setViewMode] = useState<'preview' | 'code'>('preview');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
