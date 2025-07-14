@@ -66,7 +66,7 @@ export default function HtmlPreview({ html,onClose }: {html:string,onClose:()=>v
       {/* Header */}
       <div className="border-b p-3 bg-gray-50">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-medium flex items-center">
+          <h2 className="hidden sm:flex text-sm font-medium items-center">
             <span>HTML Output</span>
           </h2>
           <div className="flex items-center space-x-2">
