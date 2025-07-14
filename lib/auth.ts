@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) return null;
 
+        if (!user?.password) return null;
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) return null;
 
@@ -50,10 +51,13 @@ export const authOptions: NextAuthOptions = {
       if (user) token.id = user.id;
       return token;
     },
-    async session({ session, token }) {
-      if (token) session.user.id = token.id;
+    async session({ session, token }: { session: any; token: any }) {
+      if (token && session?.user) {
+        session.user.id = token.id;
+      }
       return session;
-    },
+    }
+    
   },
   pages: {
     signIn: '/auth/signin',

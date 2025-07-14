@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   if (!user) return new Response('User not found', { status: 404 });
 
   // If sessionId not passed, create a new ChatSession
-  let chatSession;
+  let chatSession:any;
   if (sessionId) {
     chatSession = await prisma.chatSession.findUnique({ where: { id: sessionId } });
   } else {

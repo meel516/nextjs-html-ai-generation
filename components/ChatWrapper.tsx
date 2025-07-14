@@ -3,7 +3,7 @@ import { useState } from "react";
 import ChatInterface from "./chat-interface";
 import HtmlPreview from "./html-preview";
 
-export default function ChatWrapper({ children }: { children: React.ReactNode }) {
+export default function ChatWrapper() {
   const [generatedHtml, setGeneratedHtml] = useState('');
   const handleHtmlGenerated = (html: string) => {
     setGeneratedHtml(html);

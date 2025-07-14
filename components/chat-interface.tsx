@@ -51,7 +51,7 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
         .then(res => res.json())
         .then(data => setMessages(data));
     }
-  }, [selectedSession]);
+  }, [selectedSession,setMessages]);
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
@@ -177,9 +177,11 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3">HTML Generation AI</h3>
                   <p className="text-gray-300 mb-6">
-                    Describe the webpage you want to create and I'll generate the HTML code for you. 
-                    Choose your preferred styling method above.
-                  </p>
+  Describe the webpage you want to create and I&apos;ll generate the HTML code for you.
+  <br />
+  Choose your preferred styling method above.
+</p>
+
                   {!selectedSession && (
                     <Button 
                       onClick={async () => {
@@ -264,7 +266,7 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
               value={input}
               onChange={handleInputChange}
               placeholder={selectedSession 
-                ? "Describe your webpage (e.g. 'Create a login form with gradient background')" 
+                ? "Describe your webpage (e.g. &apos;Create a login form with gradient background&apos;)" 
                 : "Create a session to start chatting..."}
               className="flex-1 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 rounded-xl px-4 py-3 transition-all"
               disabled={isLoading || !selectedSession}
