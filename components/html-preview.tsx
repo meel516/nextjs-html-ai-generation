@@ -11,27 +11,44 @@ interface HtmlPreviewProps {
 export default function HtmlPreview({ html }: HtmlPreviewProps) {
   const [viewMode, setViewMode] = useState<'preview' | 'code'>('preview');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isIframeReady, setIframeReady] = useState(true);
+  const [iframeUrl, setIframeUrl] = useState<string | null>(null);
 
-  // Extract pure HTML from the LLM response (memoized)
+  // Extract pure HTML from the LLM response (optional: keep if your HTML comes wrapped in extra content)
   const extractPureHtml = (rawHtml: string) => {
     const htmlStart = rawHtml.indexOf('<!DOCTYPE html>');
     const htmlEnd = rawHtml.lastIndexOf('</html>') + 7;
-    return htmlStart !== -1 && htmlEnd !== -1 
+    return htmlStart !== -1 && htmlEnd !== -1
       ? rawHtml.slice(htmlStart, htmlEnd)
       : rawHtml;
   };
 
-  const pureHtml = useMemo(() => (html), [html]);
+  // Memoize the pure HTML string
+  const pureHtml = useMemo(() => extractPureHtml(html), [html]);
 
-  // Refresh iframe preview
+  // Generate a blob URL whenever pureHtml changes
+  useEffect(() => {
+    if (!pureHtml) return;
+
+    const blob = new Blob([pureHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    setIframeUrl(url);
+
+    return () => {
+      URL.revokeObjectURL(url); // clean up when component unmounts or html changes
+    };
+  }, [pureHtml]);
+
+  // Refresh iframe by regenerating the blob URL
   const refreshPreview = () => {
     setIsRefreshing(true);
-    const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
-    if (iframe) {
-      iframe.src = iframe.src;
-    }
-    setTimeout(() => setIsRefreshing(false), 500);
+
+    const blob = new Blob([pureHtml], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    setIframeUrl(url);
+
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 500);
   };
 
   // Download HTML as a file
@@ -46,13 +63,6 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-
-  // Optional: simulate loading state when HTML changes
-  useEffect(() => {
-    setIframeReady(false);
-    const timeout = setTimeout(() => setIframeReady(true), 100);
-    return () => clearTimeout(timeout);
-  }, [pureHtml]);
 
   return (
     <div className="flex flex-col h-full bg-white border-l">
@@ -81,18 +91,18 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
               <Code className="w-4 h-4 mr-1.5" />
               Code
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={refreshPreview}
               className="h-8 px-3"
               disabled={!pureHtml}
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={downloadHtml}
               className="h-8 px-3"
               disabled={!pureHtml}
@@ -107,20 +117,14 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
       <div className="flex-1 overflow-hidden bg-white">
         {viewMode === 'preview' ? (
           <div className="h-full">
-            {pureHtml ? (
-              isIframeReady ? (
-                <iframe
-                  id="preview-iframe"
-                  srcDoc={pureHtml}
-                  className="w-full h-full border-none bg-white"
-                  sandbox="allow-scripts allow-same-origin"
-                  title="HTML Preview"
-                />
-              ) : (
-                <div className="h-full flex items-center justify-center text-gray-400">
-                  <p className="text-sm">Loading preview...</p>
-                </div>
-              )
+            {iframeUrl ? (
+              <iframe
+                id="preview-iframe"
+                src={iframeUrl}
+                className="w-full h-full border-none bg-white"
+                sandbox="allow-scripts allow-same-origin"
+                title="HTML Preview"
+              />
             ) : (
               <div className="h-full flex items-center justify-center text-gray-400">
                 <div className="text-center">

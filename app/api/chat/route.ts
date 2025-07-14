@@ -68,7 +68,8 @@ export async function POST(req: Request) {
   5. Proper meta tags and title
   
   For Tailwind option, always include:
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.tailwindcss.com"></script>
+  if u are using any scipts always use defer very important 
   
   Return ONLY the HTML code, no explanations or markdown formatting.`;
   
