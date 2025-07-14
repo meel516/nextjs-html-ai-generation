@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Eye, Code, Download, RefreshCw } from 'lucide-react';
 
@@ -11,8 +11,9 @@ interface HtmlPreviewProps {
 export default function HtmlPreview({ html }: HtmlPreviewProps) {
   const [viewMode, setViewMode] = useState<'preview' | 'code'>('preview');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isIframeReady, setIframeReady] = useState(true);
 
-  // Extract just the HTML code from LLM response
+  // Extract pure HTML from the LLM response (memoized)
   const extractPureHtml = (rawHtml: string) => {
     const htmlStart = rawHtml.indexOf('<!DOCTYPE html>');
     const htmlEnd = rawHtml.lastIndexOf('</html>') + 7;
@@ -21,8 +22,19 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
       : rawHtml;
   };
 
-  const pureHtml = extractPureHtml(html);
+  const pureHtml = useMemo(() => extractPureHtml(html), [html]);
 
+  // Refresh iframe preview
+  const refreshPreview = () => {
+    setIsRefreshing(true);
+    const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
+    if (iframe) {
+      iframe.src = iframe.src;
+    }
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
+
+  // Download HTML as a file
   const downloadHtml = () => {
     const blob = new Blob([pureHtml], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -35,14 +47,12 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
     URL.revokeObjectURL(url);
   };
 
-  const refreshPreview = () => {
-    setIsRefreshing(true);
-    const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
-    if (iframe) {
-      iframe.src = iframe.src;
-    }
-    setTimeout(() => setIsRefreshing(false), 500);
-  };
+  // Optional: simulate loading state when HTML changes
+  useEffect(() => {
+    setIframeReady(false);
+    const timeout = setTimeout(() => setIframeReady(true), 100);
+    return () => clearTimeout(timeout);
+  }, [pureHtml]);
 
   return (
     <div className="flex flex-col h-full bg-white border-l">
@@ -98,13 +108,19 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
         {viewMode === 'preview' ? (
           <div className="h-full">
             {pureHtml ? (
-              <iframe
-                id="preview-iframe"
-                srcDoc={pureHtml}
-                className="w-full h-full border-none bg-white"
-                sandbox="allow-scripts allow-same-origin"
-                title="HTML Preview"
-              />
+              isIframeReady ? (
+                <iframe
+                  id="preview-iframe"
+                  srcDoc={pureHtml}
+                  className="w-full h-full border-none bg-white"
+                  sandbox="allow-scripts allow-same-origin"
+                  title="HTML Preview"
+                />
+              ) : (
+                <div className="h-full flex items-center justify-center text-gray-400">
+                  <p className="text-sm">Loading preview...</p>
+                </div>
+              )
             ) : (
               <div className="h-full flex items-center justify-center text-gray-400">
                 <div className="text-center">
