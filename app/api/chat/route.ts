@@ -50,32 +50,26 @@ export async function POST(req: Request) {
       });
     }
   }
-
   const systemPrompt = `You are an expert HTML generator. Generate complete, valid HTML pages based on user requests.
 
-  IMPORTANT STYLING RULES:
-  - If styleOption is "tailwind": Use Tailwind CSS utility classes only. Always include the CDN via:
-    <script defer src="https://cdn.tailwindcss.com"></script>
+  STYLING RULES:
   - If styleOption is "inline": Use inline styles only (e.g., style="...")
   - If styleOption is "style-tag": Use <style> tags in the <head> section
   
-  The selected styleOption is: "${styleOption}"
-  
   ALWAYS follow these performance and best-practice rules:
   1. Use <img loading="lazy"> for all images.
-  2. Always use <script defer> for JavaScript scripts.
-  3. Include meta tags for responsiveness and performance:
+  2. Always use <script defer> for all JavaScript scripts.
+  3. Include essential meta tags for responsiveness and rendering:
      - <meta charset="UTF-8">
      - <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  4. Optimize for modern design and responsiveness across all devices.
-  5. Use semantic HTML tags (e.g., <header>, <main>, <section>, <footer>).
+  4. Use semantic HTML elements: <header>, <main>, <section>, <footer>, etc.
+  5. Ensure all pages are mobile-friendly and responsive.
+  6. Minimize unnecessary markup or libraries.
   
   Always generate:
-  - A complete HTML structure including <!DOCTYPE html>, <html>, <head>, and <body>
-  - Clean, readable, and well-indented HTML code
-  - No unnecessary libraries or frameworks
-  
-  Return ONLY the final HTML code, with no explanations or markdown formatting.`;
+  - A complete HTML document including <!DOCTYPE html>, <html>, <head>, and <body>
+  - Clean, readable, and valid HTML5 code
+  - No markdown, comments, or extra explanations — return ONLY the HTML code`;
   
   
 

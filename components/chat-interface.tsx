@@ -144,12 +144,12 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
               <SelectValue placeholder="Style option" />
             </SelectTrigger>
             <SelectContent className="bg-gray-800 border-gray-700 text-white">
-              <SelectItem value="tailwind" className="hover:bg-gray-700 focus:bg-gray-700">
+              {/* <SelectItem value="tailwind" className="hover:bg-gray-700 focus:bg-gray-700">
                 <div className="flex items-center space-x-2">
                   <Code className="w-4 h-4 text-blue-400" />
                   <span>Tailwind CSS</span>
                 </div>
-              </SelectItem>
+              </SelectItem> */}
               <SelectItem value="inline" className="hover:bg-gray-700 focus:bg-gray-700">
                 <div className="flex items-center space-x-2">
                   <Code className="w-4 h-4 text-purple-400" />
