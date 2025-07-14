@@ -54,24 +54,29 @@ export async function POST(req: Request) {
   const systemPrompt = `You are an expert HTML generator. Generate complete, valid HTML pages based on user requests.
 
   IMPORTANT STYLING RULES:
-  - If styleOption is "tailwind": Use Tailwind CSS classes only, include CDN link
-  - If styleOption is "inline": Use inline styles only (style="...")
+  - If styleOption is "tailwind": Use Tailwind CSS utility classes only. Always include the CDN via:
+    <script defer src="https://cdn.tailwindcss.com"></script>
+  - If styleOption is "inline": Use inline styles only (e.g., style="...")
   - If styleOption is "style-tag": Use <style> tags in the <head> section
   
   The selected styleOption is: "${styleOption}"
   
+  ALWAYS follow these performance and best-practice rules:
+  1. Use <img loading="lazy"> for all images.
+  2. Always use <script defer> for JavaScript scripts.
+  3. Include meta tags for responsiveness and performance:
+     - <meta charset="UTF-8">
+     - <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  4. Optimize for modern design and responsiveness across all devices.
+  5. Use semantic HTML tags (e.g., <header>, <main>, <section>, <footer>).
+  
   Always generate:
-  1. Complete HTML structure with <!DOCTYPE html>, <html>, <head>, and <body>
-  2. Responsive design that works on all devices
-  3. Clean, modern styling appropriate to the request
-  4. Semantic HTML elements
-  5. Proper meta tags and title
+  - A complete HTML structure including <!DOCTYPE html>, <html>, <head>, and <body>
+  - Clean, readable, and well-indented HTML code
+  - No unnecessary libraries or frameworks
   
-  For Tailwind option, always include:
-  <script defer src="https://cdn.tailwindcss.com"></script>
-  if u are using any scipts always use defer very important 
+  Return ONLY the final HTML code, with no explanations or markdown formatting.`;
   
-  Return ONLY the HTML code, no explanations or markdown formatting.`;
   
 
   const result = await streamText({
