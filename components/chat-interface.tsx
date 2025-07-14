@@ -17,7 +17,7 @@ interface Session {
 }
 
 export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
-  const [styleOption, setStyleOption] = useState('tailwind');
+  const [styleOption, setStyleOption] = useState('inline');
   const [sessions, setSessions] = useState<Session[]>([]);
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
