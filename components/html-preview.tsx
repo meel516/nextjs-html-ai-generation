@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Eye, Code, Download, RefreshCw } from 'lucide-react';
 
 interface HtmlPreviewProps {
@@ -11,9 +10,21 @@ interface HtmlPreviewProps {
 
 export default function HtmlPreview({ html }: HtmlPreviewProps) {
   const [viewMode, setViewMode] = useState<'preview' | 'code'>('preview');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Extract just the HTML code from LLM response
+  const extractPureHtml = (rawHtml: string) => {
+    const htmlStart = rawHtml.indexOf('<!DOCTYPE html>');
+    const htmlEnd = rawHtml.lastIndexOf('</html>') + 7;
+    return htmlStart !== -1 && htmlEnd !== -1 
+      ? rawHtml.slice(htmlStart, htmlEnd)
+      : rawHtml;
+  };
+
+  const pureHtml = extractPureHtml(html);
 
   const downloadHtml = () => {
-    const blob = new Blob([html], { type: 'text/html' });
+    const blob = new Blob([pureHtml], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -25,47 +36,57 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
   };
 
   const refreshPreview = () => {
-    // Force refresh of iframe
+    setIsRefreshing(true);
     const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
     if (iframe) {
       iframe.src = iframe.src;
     }
+    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-white border-l">
       {/* Header */}
-      <div className="border-b border-gray-200 p-4">
+      <div className="border-b p-3 bg-gray-50">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900 flex items-center space-x-2">
-            <Eye className="w-5 h-5" />
-            <span>Live Preview</span>
+          <h2 className="text-sm font-medium flex items-center">
+            <span>HTML Output</span>
           </h2>
           <div className="flex items-center space-x-2">
-            <div className="flex rounded-lg border border-gray-200 p-1">
-              <Button
-                variant={viewMode === 'preview' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('preview')}
-                className="h-7"
-              >
-                <Eye className="w-4 h-4 mr-1" />
-                Preview
-              </Button>
-              <Button
-                variant={viewMode === 'code' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('code')}
-                className="h-7"
-              >
-                <Code className="w-4 h-4 mr-1" />
-                Code
-              </Button>
-            </div>
-            <Button variant="outline" size="sm" onClick={refreshPreview}>
-              <RefreshCw className="w-4 h-4" />
+            <Button
+              variant={viewMode === 'preview' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('preview')}
+              className="h-8 px-3"
+            >
+              <Eye className="w-4 h-4 mr-1.5" />
+              Preview
             </Button>
-            <Button variant="outline" size="sm" onClick={downloadHtml}>
+            <Button
+              variant={viewMode === 'code' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('code')}
+              className="h-8 px-3"
+            >
+              <Code className="w-4 h-4 mr-1.5" />
+              Code
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={refreshPreview}
+              className="h-8 px-3"
+              disabled={!pureHtml}
+            >
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={downloadHtml}
+              className="h-8 px-3"
+              disabled={!pureHtml}
+            >
               <Download className="w-4 h-4" />
             </Button>
           </div>
@@ -73,39 +94,37 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden bg-white">
         {viewMode === 'preview' ? (
           <div className="h-full">
-            {html ? (
+            {pureHtml ? (
               <iframe
                 id="preview-iframe"
-                srcDoc={html}
-                className="w-full h-full border-none"
+                srcDoc={pureHtml}
+                className="w-full h-full border-none bg-white"
                 sandbox="allow-scripts allow-same-origin"
                 title="HTML Preview"
               />
             ) : (
-              <div className="h-full flex items-center justify-center text-gray-500">
+              <div className="h-full flex items-center justify-center text-gray-400">
                 <div className="text-center">
-                  <Eye className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-medium mb-2">No Preview Available</h3>
-                  <p className="text-sm">Generate HTML code to see the preview here</p>
+                  <Eye className="w-8 h-8 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm">Generated HTML will appear here</p>
                 </div>
               </div>
             )}
           </div>
         ) : (
-          <div className="h-full p-4">
-            {html ? (
-              <pre className="h-full overflow-auto bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm font-mono">
-                <code>{html}</code>
+          <div className="h-full p-0">
+            {pureHtml ? (
+              <pre className="h-full overflow-auto p-4 text-sm font-mono text-gray-800 bg-gray-50">
+                <code>{pureHtml}</code>
               </pre>
             ) : (
-              <div className="h-full flex items-center justify-center text-gray-500">
+              <div className="h-full flex items-center justify-center text-gray-400">
                 <div className="text-center">
-                  <Code className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <h3 className="text-lg font-medium mb-2">No Code Available</h3>
-                  <p className="text-sm">Generate HTML code to see it here</p>
+                  <Code className="w-8 h-8 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm">Generated code will appear here</p>
                 </div>
               </div>
             )}
