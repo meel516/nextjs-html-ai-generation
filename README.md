@@ -3,7 +3,7 @@ nextjs-html-ai-generation
 
 An AI-powered chatbot that generates responsive, production-ready HTML and CSS code from user prompts — complete with live preview and authentication. Built for rapid MVP creation of landing pages.
 
-![Preview Screenshot](https://nextjs-html-ai-generation.vercel.app/) <!-- Optional: Add demo image -->
+Check out the [live app here](https://nextjs-html-ai-generation.vercel.app/).
 
 ---
 
