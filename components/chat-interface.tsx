@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useChat } from 'ai/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +52,22 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
         .then(data => setMessages(data));
     }
   }, [selectedSession,setMessages]);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 480 && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+  
+   
+    handleResize();
+  
+   
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [sidebarOpen]);
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100">
@@ -116,9 +132,9 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 items-center overflow-hidden">
         {/* Header */}
-        <div className="p-4 border-b border-gray-700 flex items-center justify-between bg-gray-800/50 backdrop-blur-sm">
+        <div className="p-4 border-b border-gray-700 flex items-center gap-3 flex-wrap-reverse bg-gray-800/50 backdrop-blur-sm">
           <div className="flex items-center space-x-4">
             {!sidebarOpen && (
               <Button 
@@ -260,7 +276,7 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
         </div>
 
         {/* Input - Now with 100% more visibility */}
-        <div className="p-4 border-t absolute bottom-[30px] border-gray-700 bg-gray-800/80 backdrop-blur-sm">
+        <div className="p-4 border-t mx-auto absolute bottom-[30px] border-gray-700 bg-gray-800/80 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="flex space-x-3">
             <Input
               value={input}

@@ -2,13 +2,13 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Eye, Code, Download, RefreshCw } from 'lucide-react';
+import { Eye, Code, Download, RefreshCw,XIcon } from 'lucide-react';
 
 interface HtmlPreviewProps {
   html: string;
 }
 
-export default function HtmlPreview({ html }: HtmlPreviewProps) {
+export default function HtmlPreview({ html,onClose }: {html:HtmlPreviewProps,onClose:()=>void}) {
   const [viewMode, setViewMode] = useState<'preview' | 'code'>('preview');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [iframeUrl, setIframeUrl] = useState<string | null>(null);
@@ -65,7 +65,7 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white border-l">
+    <div className="flex flex-col h-full backdrop-blur-lg bg-white border-l">
       {/* Header */}
       <div className="border-b p-3 bg-gray-50">
         <div className="flex items-center justify-between">
@@ -108,6 +108,15 @@ export default function HtmlPreview({ html }: HtmlPreviewProps) {
               disabled={!pureHtml}
             >
               <Download className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="block sm:hidden h-8 px-3"
+             
+            >
+              <XIcon className="w-4 h-4" />
             </Button>
           </div>
         </div>
