@@ -60,7 +60,7 @@ export default function ChatInterface({ onHtmlGenerated }: ChatInterfaceProps) {
     };
   
    
-    handleResize();
+    // handleResize();
   
    
     window.addEventListener('resize', handleResize);

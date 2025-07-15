@@ -12,13 +12,13 @@ export default function ChatWrapper() {
   };
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 480 && !showPreview) {
-        setShowPreview(true);
+      if (window.innerWidth < 480 && showPreview) {
+        setShowPreview(false);
       }
     };
   
     // Initial check
-    handleResize();
+    // handleResize();
   
     window.addEventListener('resize', handleResize);
   
@@ -33,11 +33,11 @@ export default function ChatWrapper() {
       <div className="col-span-12 sm:col-span-5 border-r border-gray-200">
         <ChatInterface onHtmlGenerated={handleHtmlGenerated} />
       </div>
-      <div className="block sm:none absolute top-3 right-3" onClick={() => {
+      <div className="block sm:none absolute bottom-3 right-3" onClick={() => {
 
         setShowPreview(true)
       }}><Eye color="white" /></div>
-      {showPreview ? <div className="col-span-12 sm:col-span-6 absolute h-screen z-10 inset-0 backdrop-blur-sm p-10 sm:p-0  bg-blue sm:left-auto sm:top-auto sm:static">
+      {showPreview ? <div className="col-span-12 sm:col-span-6 absolute h-screen z-10 inset-0 backdrop-blur-sm p-5 sm:p-0  bg-blue sm:left-auto sm:top-auto sm:static">
         <HtmlPreview html={generatedHtml} onClose={() => {
 
           setShowPreview(false)
